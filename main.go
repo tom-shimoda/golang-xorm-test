@@ -16,7 +16,7 @@ type User struct {
 	Version     uint64    `xorm:"version"`  // カラム名は変わらないが自動入力される
 	CreatedAt   time.Time `xorm:"created"`  // カラム名は変わらないが自動入力される
 	UpdatedAt   time.Time `xorm:"updated"`  // カラム名は変わらないが自動入力される
-	DeletedAt   time.Time `xorm:"deleted"`  // カラム名は変わらないが自動入力される
+	DeletedAt   time.Time `xorm:"deleted"`  // deletedがあれば論理削除、なければ物理削除
 }
 
 func (u User) IsValid() bool {
