@@ -98,9 +98,17 @@ func UpdateDescription(engine *xorm.Engine, id uint64, description string) {
 	}
 }
 
-func Delete(engine *xorm.Engine, id uint64) {
+func Delete(engine *xorm.Engine, id uint64, doPhysicalDeletion bool) {
 	user := User{}
-	result, err := engine.Where("id=?", id).Delete(&user)
+	var result int64
+	var err error
+
+	if doPhysicalDeletion {
+		result, err = engine.Where("id=?", id).Unscoped().Delete(&user) // Unscopedをつけたら物理削除
+	} else {
+		result, err = engine.Where("id=?", id).Delete(&user)
+	}
+
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -150,13 +158,13 @@ func main() {
 
 	Migrate(engine)
 
-    fmt.Println("before:")
-    PrintAll(engine)
+	fmt.Println("before:")
+	PrintAll(engine)
 
 	// description := new(string)
 	// *description = "説明"
 	// user := User{
-	// 	Name:        "太郎3",
+	// 	Name:        "太郎4",
 	// 	Description: description,
 	// 	EquipId:     100,
 	// }
@@ -167,7 +175,7 @@ func main() {
 
 	// UpdateDescription(engine, 2, "説明文書き換えテスト")
 
-	// Delete(engine, 3)
+	// Delete(engine, 2, true)
 	// DeleteAll(engine)
 
 	fmt.Println("after:")
